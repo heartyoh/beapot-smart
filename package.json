@@ -1,0 +1,18 @@
+{
+  "name": "beapot-smart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scan.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http": "0.0.0",
+    "httpdispatcher": "^1.0.0",
+    "sockjs-client": "^1.1.0",
+    "stompjs": "^2.3.3"
+  }
+}
