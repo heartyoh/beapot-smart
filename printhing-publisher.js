@@ -23,7 +23,7 @@ function disconnect(){
 }
 
 function send(data){
-  if(!connect)
+  if(!connected)
     return
   
   client.send('/elidom/stomp/topic/hatiolab-hq/smart',
