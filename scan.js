@@ -68,15 +68,16 @@ function parseMSD(data) {
 
 function parseData(data) {
   var header = parseHeader(data)
-  var _data = parseMSD(data.substr(header.len))
+  var _data = parseMSD(data.substr((header.len + 1) * 2))
 
-  if(header.type == 1 && header.data == 6) {
+  if(data.length == 62 && header.type == 1 && header.data == 6 
+    && _data.len == 0x1B && _data.terminator == 0xFF) {
     return {
       header: header,
       data: _data
     }    
   } else {
-    return data
+    return null
   }
 }
 
@@ -88,8 +89,9 @@ function scan(req, res) {
   while(body['iam' + i]) {
 
     var data = body['data' + i]
+    var _data = parseData(data)
 
-    if(data.length !== 62) {
+    if(!_data) {
       i++
       continue
     }
@@ -100,7 +102,7 @@ function scan(req, res) {
       bdaddr: body['bdaddr' + i],
       rssi: body['rssi' + i],
       data: data,
-      _data: parseData(data)
+      _data: _data
     })
 
     i++;
