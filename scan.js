@@ -5,6 +5,14 @@ function toInt(data, index, length) {
   return parseInt(data.substr(index, length), 16)
 }
 
+function toSignedInt(data, index, length) {
+  var intVal = toInt(data, index, length)
+  if ((intVal & 0x8000) > 0) {
+    intVal = intVal - 0x10000;
+  }
+  return intVal;
+}
+
 function parseHeader(data) {
   var len = toInt(data, 0, 2)
   var type = toInt(data, 2, 2)
@@ -32,13 +40,13 @@ function parseMSD(data) {
   var scanner = toInt(data, 20, 4)
   var beacon = toInt(data, 24, 4)
 
-  var accelX = toInt(data, 28, 4)
-  var accelY = toInt(data, 32, 4)
-  var accelZ = toInt(data, 36, 4)
+  var accelX = toSignedInt(data, 28, 4)
+  var accelY = toSignedInt(data, 32, 4)
+  var accelZ = toSignedInt(data, 36, 4)
 
-  var gyroX = toInt(data, 40, 4)
-  var gyroY = toInt(data, 44, 4)
-  var gyroZ = toInt(data, 48, 4)
+  var gyroX = toSignedInt(data, 40, 4)
+  var gyroY = toSignedInt(data, 44, 4)
+  var gyroZ = toSignedInt(data, 48, 4)
 
   var battery = toInt(data, 52, 2)
   var terminator = toInt(data, 54, 2)
@@ -70,12 +78,12 @@ function parseData(data) {
   var header = parseHeader(data)
   var _data = parseMSD(data.substr((header.len + 1) * 2))
 
-  if(data.length == 62 && header.type == 1 && header.data == 6 
+  if(data.length == 62 && header.type == 1 && header.data == 6
     && _data.len == 0x1B && _data.terminator == 0xFF) {
     return {
       header: header,
       data: _data
-    }    
+    }
   } else {
     return null
   }
